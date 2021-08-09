@@ -4,7 +4,7 @@ import {
   DrawerContentComponentProps,
   DrawerContentScrollView,
 } from '@react-navigation/drawer';
-import {StackNavigator} from './StackNavigator';
+// import {StackNavigator} from './StackNavigator';
 import {SettingsScreen} from '../screens/SettingsScreen';
 import {
   Image,
@@ -13,7 +13,9 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
-import {styles} from '../theme/appTheme';
+import {styles, colores} from '../theme/appTheme';
+import {Tabs} from './Tabs';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const Drawer = createDrawerNavigator();
 
@@ -27,7 +29,7 @@ export const MenuLateral = () => {
         drawerType: width >= 768 ? 'permanent' : 'front', // Menú modo horizontal
         headerShown: false, // Oculta la hamburguesa
       }}>
-      <Drawer.Screen name="StackNavigator" component={StackNavigator} />
+      <Drawer.Screen name="Tabs" component={Tabs} />
       <Drawer.Screen name="SettingsScreen" component={SettingsScreen} />
     </Drawer.Navigator>
   );
@@ -46,15 +48,24 @@ const MenuInterno = ({navigation}: DrawerContentComponentProps) => {
       </View>
       <View style={styles.menuContainer}>
         <TouchableOpacity
-          style={styles.menuBoton}
-          onPress={() => navigation.navigate('StackNavigator')}>
-          <Text style={styles.menuTexto}>Navegacion Stack</Text>
+          style={{
+            ...styles.menuBoton,
+            flexDirection: 'row',
+          }}
+          onPress={() => navigation.navigate('Tabs')}>
+          <Icon name="compass-outline" size={23} color={colores.primary} />
+          <Text style={styles.menuTexto}> Navegacion</Text>
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            ...styles.menuBoton,
+            flexDirection: 'row',
+          }}>
+          <Icon name="settings-outline" size={23} color={colores.primary} />
           <Text
             style={styles.menuTexto}
             onPress={() => navigation.navigate('SettingsScreen')}>
-            Settings Stack
+            Ajustes
           </Text>
         </TouchableOpacity>
       </View>
