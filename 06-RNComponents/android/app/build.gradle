@@ -6,7 +6,6 @@ project.ext.vectoricons = [
 
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
 
-
 import com.android.build.OutputFile
 
 /**
@@ -138,7 +137,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.peliculasapp"
+        applicationId "com.rncomponents"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
