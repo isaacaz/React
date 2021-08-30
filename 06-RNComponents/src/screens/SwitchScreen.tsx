@@ -29,6 +29,22 @@ export const SwitchScreen = () => {
           onChange={value => onChange(value, 'isActive')}
         />
       </View>
+
+      <View style={styles.switchRow}>
+        <Text>isHungry</Text>
+        <CustomSwitch
+          isOn={isHungry}
+          onChange={value => onChange(value, 'isHungry')}
+        />
+      </View>
+
+      <View style={styles.switchRow}>
+        <Text>isHappy</Text>
+        <CustomSwitch
+          isOn={isHappy}
+          onChange={value => onChange(value, 'isHappy')}
+        />
+      </View>
       <Text style={styles.switchText}>{JSON.stringify(state, null, 5)}</Text>
     </View>
   );
