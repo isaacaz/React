@@ -1,10 +1,15 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {PickerIOS, RefreshControl, View} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
+import {ThemeContext} from '../../context/themeContext/ThemeContext';
 import {HeaderTitle} from '../components/HeaderTitle';
 import {style} from '../theme/appTheme';
 
 export const PullToRefreshScreen = () => {
+  const {
+    theme: {colors, dividerColor, dark},
+  } = useContext(ThemeContext);
+
   const [refreshing, setrefreshing] = useState(false);
 
   const [data, setData] = useState<string>();
@@ -25,11 +30,11 @@ export const PullToRefreshScreen = () => {
           refreshing={refreshing}
           onRefresh={onRefresh}
           progressViewOffset={10}
-          progressBackgroundColor="#5856D6"
-          colors={['white', 'red', 'orange']}
+          progressBackgroundColor={dividerColor}
+          colors={[colors.text]}
           //   IOS
-          style={{backgroundColor: '#5856D6'}}
-          tintColor="white"
+          //style={{backgroundColor: '#5856D6'}}
+          tintColor={dark ? 'white' : 'black'}
         />
       }>
       <View style={style.marginGlobal}>
