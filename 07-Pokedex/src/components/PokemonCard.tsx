@@ -1,4 +1,5 @@
-import React from 'react';
+import React, {useEffect, useRef, useState} from 'react';
+import ImageColors from 'react-native-image-colors';
 import {
   Dimensions,
   Image,
@@ -9,6 +10,8 @@ import {
 } from 'react-native';
 import {SimplePokemon} from '../interfaces/pokemonInterfaces';
 import {FadeInImage} from './FadeInImage';
+import {useNavigation} from '@react-navigation/core';
+import {CommonActions} from '@react-navigation/native';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -17,12 +20,53 @@ interface Props {
 }
 
 export const PokemonCard = ({pokemon}: Props) => {
+  const [bgColor, setBgColor] = useState('grey');
+  const isMounted = useRef(true);
+
+  const result = () =>
+    ImageColors.getColors(pokemon.picture, {
+      fallback: '#000000',
+      cache: true,
+      key: pokemon.id,
+    });
+
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    ImageColors.getColors(pokemon.picture, {fallback: 'grey'}).then(colors => {
+      if (!isMounted.current) {
+        return;
+      }
+
+      if (colors.platform === 'android') {
+        setBgColor(colors.dominant || 'grey');
+      }
+    });
+
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+
   return (
-    <TouchableOpacity activeOpacity={0.9}>
+    <TouchableOpacity
+      activeOpacity={0.9}
+      onPress={() =>
+        navigation.dispatch(
+          CommonActions.navigate({
+            name: 'PokemonScreen',
+            params: {
+              simplePokemon: pokemon,
+              color: bgColor,
+            },
+          }),
+        )
+      }>
       <View
         style={{
           ...styles.cardContainer,
           width: windowWidth * 0.4,
+          backgroundColor: bgColor,
         }}>
         <View>
           <Text style={styles.name}>
@@ -45,7 +89,6 @@ export const PokemonCard = ({pokemon}: Props) => {
 const styles = StyleSheet.create({
   cardContainer: {
     marginHorizontal: 10,
-    backgroundColor: 'red',
     height: 120,
     width: 160,
     marginBottom: 25,
