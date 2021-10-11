@@ -2,6 +2,7 @@ import React, {createContext, useEffect, useState} from 'react';
 import {AppState, Platform} from 'react-native';
 import {
   check,
+  openSettings,
   PERMISSIONS,
   PermissionStatus,
   request,
@@ -27,6 +28,7 @@ export const PermissionsProvider = ({children}: any) => {
   const [permissions, setPermissions] = useState(permissionsInitState);
 
   useEffect(() => {
+    //checkLocationPermission();
     AppState.addEventListener('change', state => {
       if (state != 'active') return;
 
@@ -47,6 +49,9 @@ export const PermissionsProvider = ({children}: any) => {
       ...permissions,
       locationStatus: permissionStatus,
     });
+    if (permissionStatus === 'blocked') {
+      openSettings();
+    }
   };
   const checkLocationPermission = async () => {
     let permissionStatus: PermissionStatus;
