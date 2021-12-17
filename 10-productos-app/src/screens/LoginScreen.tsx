@@ -1,6 +1,8 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import React from 'react';
+import React, {useContext, useEffect} from 'react';
+
 import {
+  Alert,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
@@ -11,20 +13,34 @@ import {
 } from 'react-native';
 import {Background} from '../components/Background';
 import {WhiteLogo} from '../components/WhiteLogo';
+import {AuthContext} from '../context/AuthContext';
 import {useForm} from '../hooks/useForm';
 import {loginStyles} from '../theme/loginTheme';
 
 interface Props extends StackScreenProps<any, any> {}
 
 export const LoginScreen = ({navigation}: Props) => {
+  const {singIn, errorMessage, removeError} = useContext(AuthContext);
+
   const {email, password, onChange} = useForm({
     email: '',
     password: '',
   });
 
+  useEffect(() => {
+    if (errorMessage.length === 0) return;
+    Alert.alert('Login incorrecto', errorMessage, [
+      {
+        text: 'Ok',
+        onPress: removeError,
+      },
+    ]);
+  }, [errorMessage]);
+
   const onLogin = () => {
     console.log(email, password);
     Keyboard.dismiss();
+    singIn({correo: email, password});
   };
 
   return (
