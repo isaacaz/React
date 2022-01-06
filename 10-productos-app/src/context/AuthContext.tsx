@@ -1,7 +1,12 @@
 import React, {createContext, useEffect, useReducer} from 'react';
 import cafeApi from '../api/cafeApi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {LoginData, LoginResponse, Usuario} from '../interfaces/appInterfaces';
+import {
+  LoginData,
+  LoginResponse,
+  RegisterData,
+  Usuario,
+} from '../interfaces/appInterfaces';
 import {authReducer, AuthState} from './authReducer';
 
 type AuthContextProps = {
@@ -10,7 +15,7 @@ type AuthContextProps = {
   user: Usuario | null;
   status: 'checking' | 'authenticated' | 'not-authenticated';
   singIn: (loginData: LoginData) => void;
-  singUp: () => void;
+  singUp: (registerData: RegisterData) => void;
   logOut: () => void;
   removeError: () => void;
 };
@@ -72,8 +77,32 @@ export const AuthProvider = ({children}: any) => {
       });
     }
   };
-  const singUp = () => {};
-  const logOut = () => {};
+  const singUp = async ({nombre, correo, password}: RegisterData) => {
+    try {
+      const {data} = await cafeApi.post<LoginResponse>('/usuarios', {
+        correo,
+        password,
+        nombre,
+      });
+      dispatch({
+        type: 'signUp',
+        payload: {
+          token: data.token,
+          user: data.usuario,
+        },
+      });
+      await AsyncStorage.setItem('token', data.token);
+    } catch (error: any) {
+      dispatch({
+        type: 'addError',
+        payload: error.response.data.errors[0].msg || 'Revise la Información',
+      });
+    }
+  };
+  const logOut = async () => {
+    await AsyncStorage.removeItem('token');
+    dispatch({type: 'logout'});
+  };
   const removeError = () => {
     dispatch({type: 'removeError'});
   };

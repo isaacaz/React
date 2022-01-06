@@ -1,6 +1,7 @@
 import {StackScreenProps} from '@react-navigation/stack';
-import React from 'react';
+import React, {useContext, useEffect} from 'react';
 import {
+  Alert,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
@@ -12,19 +13,37 @@ import {
 import {WhiteLogo} from '../components/WhiteLogo';
 import {useForm} from '../hooks/useForm';
 import {loginStyles} from '../theme/loginTheme';
+import {AuthContext} from '../context/AuthContext';
 
 interface Props extends StackScreenProps<any, any> {}
 
 export const RegisterScreen = ({navigation}: Props) => {
+  const {singUp, errorMessage, removeError} = useContext(AuthContext);
+
   const {email, password, name, onChange} = useForm({
     name: '',
     email: '',
     password: '',
   });
 
+  useEffect(() => {
+    if (errorMessage.length === 0) return;
+    Alert.alert('Registro incorrecto', errorMessage, [
+      {
+        text: 'Ok',
+        onPress: removeError,
+      },
+    ]);
+  }, [errorMessage]);
+
   const onRegister = () => {
     console.log(email, password, name);
     Keyboard.dismiss();
+    singUp({
+      nombre: name,
+      correo: email,
+      password,
+    });
   };
 
   return (
@@ -46,8 +65,8 @@ export const RegisterScreen = ({navigation}: Props) => {
               Platform.OS === 'ios' && loginStyles.inputFieldIOS,
             ]}
             selectionColor="white"
-            onChangeText={value => onChange(value, 'email')}
-            value={email}
+            onChangeText={value => onChange(value, 'name')}
+            value={name}
             onSubmitEditing={onRegister}
             autoCapitalize="words"
             autoCorrect={false}
